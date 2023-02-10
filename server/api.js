@@ -8,6 +8,7 @@ const { createMeeting,
     deleteFromDatabasebyId,
     deleteAllFromDatabase } = require('./db.js')
 
+//Minion Routes
 
 apiRouter.get('/minions', (req, res, next) => {
     const allMinions = (getAllFromDatabase('minions'))
@@ -70,5 +71,65 @@ apiRouter.delete('/minions/:id', (req, res, next) => {
     }
 })
 
+
+//Idea Routes
+
+apiRouter.get('/ideas', (req, res, next) => {
+    const allIdeas = getAllFromDatabase('ideas')
+    res.send(allIdeas)
+})
+
+apiRouter.post('/ideas', (req, res, next) => {
+    
+    const newIdea = addToDatabase('ideas', req.body)
+    res.status(201).send(newIdea)
+})
+
+apiRouter.get('/ideas/:ideaId', (req, res, next) => {
+    const ideaId = req.params.ideaId;
+    const allIdeas = getAllFromDatabase('ideas');
+    const found = allIdeas.some(idea => {
+        return idea.id === ideaId
+    })
+
+    if(found && (typeof Number(ideaId) === 'number')){
+
+        res.send(getFromDatabaseById('ideas', ideaId))
+    }
+    else {
+        res.status(404).send('Not valid Id')
+    }
+
+})
+
+apiRouter.put('/ideas/:ideaId', (req, res, next) => {
+    const ideaId = req.params.ideaId;
+    const allIdeas = getAllFromDatabase('ideas');
+    const idInArray = allIdeas.some(idea => {
+        return idea.id === ideaId })
+
+    if(idInArray && (typeof Number(ideaId) === 'number')){
+        const updatedIdea = updateInstanceInDatabase('ideas', req.body)
+        res.send(updatedIdea)
+    }
+    else {
+        res.status(404).send()
+    }
+})
+
+apiRouter.delete('/ideas/:ideaId', (req, res, next) => {
+    const ideaId = req.params.ideaId;
+    const allIdeas = getAllFromDatabase('ideas');
+    const idInArray = allIdeas.some(idea => {
+        return idea.id === ideaId
+    })
+
+    if(idInArray && (typeof Number(ideaId) === 'number')){
+        res.status(204).send(deleteFromDatabasebyId('ideas', ideaId))
+    }
+    else {
+        res.status(404).send()
+    }
+})
 
 module.exports = apiRouter;

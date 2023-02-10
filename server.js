@@ -1,7 +1,5 @@
 const express = require('express');
 const app = express();
-
-
 module.exports = app;
 
 /* Do not change the following line! It is required for testing and allowing
