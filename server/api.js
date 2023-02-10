@@ -8,6 +8,8 @@ const { createMeeting,
     deleteFromDatabasebyId,
     deleteAllFromDatabase } = require('./db.js')
 
+const  checkMillionDollarIdea  = require('./checkMillionDollarIdea.js')
+
 //Minion Routes
 
 apiRouter.get('/minions', (req, res, next) => {
@@ -79,10 +81,10 @@ apiRouter.get('/ideas', (req, res, next) => {
     res.send(allIdeas)
 })
 
-apiRouter.post('/ideas', (req, res, next) => {
-    
-    const newIdea = addToDatabase('ideas', req.body)
-    res.status(201).send(newIdea)
+apiRouter.post('/ideas', checkMillionDollarIdea, (req, res, next) => {
+
+        const newIdea = addToDatabase('ideas', req.body)
+        res.status(201).send(newIdea)
 })
 
 apiRouter.get('/ideas/:ideaId', (req, res, next) => {
@@ -130,6 +132,21 @@ apiRouter.delete('/ideas/:ideaId', (req, res, next) => {
     else {
         res.status(404).send()
     }
+})
+
+//Meeting routes
+
+apiRouter.get('/meetings', (req, res, next) => {
+    res.send(getAllFromDatabase('meetings'))
+})
+
+apiRouter.post('/meetings', (req, res, next) => {
+    const newMeeting = createMeeting()
+    res.status(201).send(addToDatabase('meetings', newMeeting))
+})
+
+apiRouter.delete('/meetings', (req, res, next) => {
+    res.status(204).send(deleteAllFromDatabase('meetings'))
 })
 
 module.exports = apiRouter;
